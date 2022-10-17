@@ -12,7 +12,7 @@
     "**/*.{js, jsx, html, css, json}": [
       "prettier --write .",
       "eslint --fix .",
-      "git add"
+      "git add ."
     ]
   },
   "dependencies": {
