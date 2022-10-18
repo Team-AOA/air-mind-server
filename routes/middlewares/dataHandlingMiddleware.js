@@ -52,7 +52,10 @@ async function getMindMapData(req, res, next) {
         ? ['public', 'private']
         : req.query.access || 'public';
 
-    res.locals.mindMapsList = await MindMap.find({ author: userId, access })
+    res.locals.mindMapsList = await MindMap.find({
+      author: userId,
+      access,
+    })
       .sort({ date: -1 })
       .limit(max);
 
