@@ -43,11 +43,15 @@ app.use((req, res, next) => {
 });
 
 app.use(function generalErrorHandler(err, req, res) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  const responseBody = {
+    result: 'error',
+    error: {
+      message: err.message,
+      code: err.status || 500,
+    },
+  };
 
-  res.status(err.status || 500);
-  res.render('error');
+  res.json(responseBody);
 });
 
 module.exports = app;
