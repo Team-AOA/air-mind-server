@@ -1,3 +1,5 @@
+const MindMap = require('../../models/MindMap');
+
 function endOfGetMindMapReq(req, res, next) {
   if (res.locals.mindMapsList) {
     const responseBody = {};
@@ -17,6 +19,23 @@ function endOfGetMindMapReq(req, res, next) {
   next(error);
 }
 
+const getPublicMindMaps = async (req, res, next) => {
+  try {
+    const { max } = req.query;
+    const publicMindMaps = await MindMap.find({ access: 'public' }).limit(max);
+    const responseBody = {};
+
+    responseBody.data = publicMindMaps;
+
+    res.status(200).json(responseBody);
+    return;
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 module.exports = {
   endOfGetMindMapReq,
+  getPublicMindMaps,
 };

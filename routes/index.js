@@ -11,6 +11,7 @@ const {
 } = require('./middlewares/dataHandlingMiddleware');
 
 const { endOfGetNodeReq } = require('./controllers/nodeController');
+const { getPublicMindMaps } = require('./controllers/mindMapController');
 
 const { endOfGetMindMapReq } = require('./controllers/mindMapController');
 
@@ -28,5 +29,7 @@ router.get(
   getMindMapData,
   endOfGetMindMapReq,
 );
+
+router.get('/mind-maps?access=public&max=15', getPublicMindMaps);
 
 module.exports = router;
