@@ -21,6 +21,7 @@ const nodeSchema = new mongoose.Schema({
     color: { type: String, required: true },
     isFold: { type: Boolean, required: true },
   },
+  date: { type: Date, required: true, default: new Date() },
 });
 
 nodeSchema.plugin(autoPopulate);
