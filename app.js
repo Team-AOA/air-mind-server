@@ -1,13 +1,15 @@
 // const createError = require('http-errors');
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
+const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 
+const app = express();
+
 require('./configs/dbConfig')();
 
-const app = express();
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -17,17 +19,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 3,
-    },
-  }),
-);
-
 app.use('/', indexRouter);
 app.use((req, res, next) => {
   const error = new Error('Page Not Found');
@@ -35,7 +26,7 @@ app.use((req, res, next) => {
   next(error);
 });
 
-app.use(function generalErrorHandler(err, req, res) {
+app.use((err, req, res) => {
   const responseBody = {
     result: 'error',
     error: {

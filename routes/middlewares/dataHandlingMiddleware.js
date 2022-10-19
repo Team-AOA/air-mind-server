@@ -1,7 +1,7 @@
 const Node = require('../../models/Node');
 const MindMap = require('../../models/MindMap');
 
-async function getNodeData(req, res, next) {
+const getNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
 
@@ -13,9 +13,9 @@ async function getNodeData(req, res, next) {
 
     next(error);
   }
-}
+};
 
-async function putNodeData(req, res, next) {
+const putNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
     const node = req.body;
@@ -35,9 +35,9 @@ async function putNodeData(req, res, next) {
 
     next(error);
   }
-}
+};
 
-async function postNodeData(req, res, next) {
+const postNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
     const parentNode = await Node.findById(nodeId);
@@ -52,9 +52,9 @@ async function postNodeData(req, res, next) {
 
     next(error);
   }
-}
+};
 
-function makePlainObject(req, res, next) {
+const makePlainObject = (req, res, next) => {
   try {
     const nestedObjectQueue = [res.locals.nodesNestedObject];
     const plainObject = {};
@@ -80,9 +80,9 @@ function makePlainObject(req, res, next) {
 
     next(error);
   }
-}
+};
 
-async function getMindMapData(req, res, next) {
+const getMindMapData = async (req, res, next) => {
   try {
     const { userId } = req.params;
     const max = req.query.max || 15;
@@ -104,7 +104,7 @@ async function getMindMapData(req, res, next) {
 
     next(err);
   }
-}
+};
 
 module.exports = {
   getNodeData,

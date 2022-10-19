@@ -1,4 +1,4 @@
-function endOfGetNodeReq(req, res, next) {
+const endOfGetNodeReq = (req, res, next) => {
   if (res.locals.nodesPlainObject) {
     const responseBody = {};
 
@@ -15,9 +15,9 @@ function endOfGetNodeReq(req, res, next) {
   );
   error.status = 500;
   next(error);
-}
+};
 
-function endOfPutNodeReq(req, res, next) {
+const endOfPutNodeReq = (req, res, next) => {
   if (res.locals.updatedNode) {
     const responseBody = {};
 
@@ -33,9 +33,9 @@ function endOfPutNodeReq(req, res, next) {
   );
   error.status = 500;
   next(error);
-}
+};
 
-function endOfPostNodeReq(req, res, next) {
+const endOfPostNodeReq = (req, res, next) => {
   if (res.locals.createdNode) {
     const responseBody = {};
 
@@ -50,7 +50,7 @@ function endOfPostNodeReq(req, res, next) {
   );
   error.status = 500;
   next(error);
-}
+};
 
 module.exports = {
   endOfGetNodeReq,

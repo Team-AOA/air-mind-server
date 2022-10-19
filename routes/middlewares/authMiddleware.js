@@ -1,10 +1,10 @@
-function auth(req, res, next) {
+const auth = (req, res, next) => {
   next();
-}
+};
 
-function auth2(req, res, next) {
+const auth2 = (req, res, next) => {
   next();
-}
+};
 
 module.exports = {
   auth,
