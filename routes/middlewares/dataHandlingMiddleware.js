@@ -15,6 +15,28 @@ async function getNodeData(req, res, next) {
   }
 }
 
+async function putNodeData(req, res, next) {
+  try {
+    const { nodeId } = req.params;
+    const node = req.body;
+
+    const updatedNode = await Node.findByIdAndUpdate(nodeId, node, {
+      returnOriginal: false,
+      timestamps: {
+        createdAt: true,
+        updatedAt: false,
+      },
+    });
+    res.locals.updatedNode = updatedNode;
+
+    next();
+  } catch (err) {
+    err.message = `Error during putting node in dataHandlingMiddleware.js${err.message}`;
+
+    next(err);
+  }
+}
+
 function makePlainObject(req, res, next) {
   try {
     const nestedObjectQueue = [res.locals.nodesNestedObject];
@@ -69,6 +91,7 @@ async function getMindMapData(req, res, next) {
 
 module.exports = {
   getNodeData,
+  putNodeData,
   makePlainObject,
   getMindMapData,
 };
