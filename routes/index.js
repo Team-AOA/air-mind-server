@@ -9,11 +9,13 @@ const {
   putNodeData,
   makePlainObject,
   getMindMapData,
+  postNodeData,
 } = require('./middlewares/dataHandlingMiddleware');
 
 const {
   endOfGetNodeReq,
   endOfPutNodeReq,
+  endOfPostNodeReq,
 } = require('./controllers/nodeController');
 
 const {
@@ -21,20 +23,11 @@ const {
   getPublicMindMaps,
 } = require('./controllers/mindMapController');
 
-router.get(
-  '/users/:userId/mind-maps/:mindMapId/nodes/:nodeId',
-  auth,
-  getNodeData,
-  makePlainObject,
-  endOfGetNodeReq,
-);
-
-router.put(
-  '/users/:userId/mind-maps/:mindMapId/nodes/:nodeId',
-  auth,
-  putNodeData,
-  endOfPutNodeReq,
-);
+router
+  .route('/users/:userId/mind-maps/:mindMapId/nodes/:nodeId')
+  .get(auth, getNodeData, makePlainObject, endOfGetNodeReq)
+  .put(auth, putNodeData, endOfPutNodeReq)
+  .post(auth, postNodeData, endOfPostNodeReq);
 
 router.get(
   '/users/:userId/mind-maps',

@@ -8,10 +8,10 @@ async function getNodeData(req, res, next) {
     res.locals.nodesNestedObject = await Node.findById(nodeId);
 
     next();
-  } catch (err) {
-    err.message = `Error during getting nodes in dataHandlingMiddleware.js : ${err.message}`;
+  } catch (error) {
+    error.message = `Error during getting nodes in function getNodeData of dataHandlingMiddleware.js : ${error.message}`;
 
-    next(err);
+    next(error);
   }
 }
 
@@ -30,10 +30,27 @@ async function putNodeData(req, res, next) {
     res.locals.updatedNode = updatedNode;
 
     next();
-  } catch (err) {
-    err.message = `Error during putting node in dataHandlingMiddleware.js${err.message}`;
+  } catch (error) {
+    error.message = `Error during putting node in function putNodeData of dataHandlingMiddleware.js${error.message}`;
 
-    next(err);
+    next(error);
+  }
+}
+
+async function postNodeData(req, res, next) {
+  try {
+    const { nodeId } = req.params;
+    const parentNode = await Node.findById(nodeId);
+    const childNode = await Node.create({ parent: nodeId });
+    const { _id: id } = childNode;
+
+    await parentNode.children.push(id).save();
+
+    res.locals.childNode = childNode;
+  } catch (error) {
+    error.message = `Error during creating node in function postNodeData of dataHandlingMiddleware.js${error.message}`;
+
+    next(error);
   }
 }
 
@@ -58,10 +75,10 @@ function makePlainObject(req, res, next) {
     res.locals.nodesPlainObject = plainObject;
 
     next();
-  } catch (err) {
-    err.message = `Error during making plain object in dataHandlingMiddleware.js : ${err.message}`;
+  } catch (error) {
+    error.message = `Error during making plain object in function makePlainObject of dataHandlingMiddleware.js : ${error.message}`;
 
-    next(err);
+    next(error);
   }
 }
 
@@ -83,7 +100,7 @@ async function getMindMapData(req, res, next) {
 
     next();
   } catch (err) {
-    err.message = `Error during getting mindMaps in dataHandlingMiddleware.js : ${err.message}`;
+    err.message = `Error during getting mindMaps in function getMindMapData of dataHandlingMiddleware.js : ${err.message}`;
 
     next(err);
   }
@@ -92,6 +109,7 @@ async function getMindMapData(req, res, next) {
 module.exports = {
   getNodeData,
   putNodeData,
+  postNodeData,
   makePlainObject,
   getMindMapData,
 };

@@ -1,42 +1,13 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
-const app = require('../app');
 const debug = require('debug')('air-mind-server:server');
 const http = require('http');
-
-/**
- * Get port from environment and store in Express.
- */
-
-const port = normalizePort(process.env.PORT || '8000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
+const app = require('../app');
 
 const server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
+const normalizePort = val => {
   const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
+  if (Number.isNaN(port)) {
     // named pipe
     return val;
   }
@@ -47,20 +18,21 @@ function normalizePort(val) {
   }
 
   return false;
-}
+};
 
-/**
- * Event listener for HTTP server "error" event.
- */
+const port = normalizePort(process.env.PORT || '8000');
 
-function onError(error) {
+app.set('port', port);
+
+server.listen(port);
+
+const onError = error => {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
   const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
-  // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error(`${bind} requires elevated privileges`);
@@ -73,14 +45,14 @@ function onError(error) {
     default:
       throw error;
   }
-}
+};
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+server.on('error', onError);
 
-function onListening() {
+const onListening = () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
   debug(`Listening on ${bind}`);
-}
+};
+
+server.on('listening', onListening);

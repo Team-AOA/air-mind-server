@@ -11,7 +11,7 @@ function endOfGetNodeReq(req, res, next) {
   }
 
   const error = new Error(
-    'Error : no plain object transferred in nodeController.js',
+    'Error : no plain object transferred in function endOfGetNodeReq of nodeController.js',
   );
   error.status = 500;
   next(error);
@@ -29,7 +29,24 @@ function endOfPutNodeReq(req, res, next) {
   }
 
   const error = new Error(
-    'Error : no processed data transferred in nodeController.js',
+    'Error : no processed data transferred in function endOfPutNodeReq of nodeController.js',
+  );
+  error.status = 500;
+  next(error);
+}
+
+function endOfPostNodeReq(req, res, next) {
+  if (res.locals.createdNode) {
+    const responseBody = {};
+
+    responseBody.result = 'ok';
+    responseBody.node = res.locals.createdNode;
+
+    res.status(201).json(responseBody);
+    return;
+  }
+  const error = new Error(
+    'Error: no processed data transferred in function endOfPostNodeReq of nodeController.js',
   );
   error.status = 500;
   next(error);
@@ -38,4 +55,5 @@ function endOfPutNodeReq(req, res, next) {
 module.exports = {
   endOfGetNodeReq,
   endOfPutNodeReq,
+  endOfPostNodeReq,
 };
