@@ -2,21 +2,14 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
+
+require('./configs/dbConfig')();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-mongoose.connect(process.env.MONGO_DB, err => {
-  if (err) {
-    console.error('The error is : ', err);
-    return;
-  }
-  console.log('DB Connected');
-});
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');

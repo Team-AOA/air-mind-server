@@ -1,4 +1,5 @@
 const Node = require('../../models/Node');
+const MindMap = require('../../models/MindMap');
 
 async function getNodeData(req, res, next) {
   try {
@@ -42,7 +43,32 @@ function makePlainObject(req, res, next) {
   }
 }
 
+async function getMindMapData(req, res, next) {
+  try {
+    const { userId } = req.params;
+    const max = req.query.max || 15;
+    const access =
+      req.query.access === 'mixed'
+        ? ['public', 'private']
+        : req.query.access || 'public';
+
+    res.locals.mindMapsList = await MindMap.find({
+      author: userId,
+      access,
+    })
+      .sort({ date: -1 })
+      .limit(max);
+
+    next();
+  } catch (err) {
+    err.message = `Error during getting mindMaps in dataHandlingMiddleware.js : ${err.message}`;
+
+    next(err);
+  }
+}
+
 module.exports = {
   getNodeData,
   makePlainObject,
+  getMindMapData,
 };

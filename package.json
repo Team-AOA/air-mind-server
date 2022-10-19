@@ -1,9 +1,10 @@
 {
   "name": "air-mind-server",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
     "spec": "mocha spec --sort --exit",
     "pre-commit": "lint-staged && rm -rf .git/hooks && ln -s ../.husky .git/hooks",
     "prepare": "husky install && husky add .husky/pre-commit 'npm run pre-commit'"
