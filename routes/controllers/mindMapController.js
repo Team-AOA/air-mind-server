@@ -21,11 +21,14 @@ function endOfGetMindMapReq(req, res, next) {
 
 const getPublicMindMaps = async (req, res, next) => {
   try {
-    const { max } = req.query;
+    const max = req.query.max || 15;
     const publicMindMaps = await MindMap.find({ access: 'public' }).limit(max);
+    const mindMapCount = publicMindMaps.length;
     const responseBody = {};
 
+    responseBody.result = 'ok';
     responseBody.data = publicMindMaps;
+    responseBody.count = mindMapCount;
 
     res.status(200).json(responseBody);
     return;
