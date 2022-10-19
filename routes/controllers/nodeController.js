@@ -17,6 +17,25 @@ function endOfGetNodeReq(req, res, next) {
   next(error);
 }
 
+function endOfPutNodeReq(req, res, next) {
+  if (res.locals.updatedNode) {
+    const responseBody = {};
+
+    responseBody.result = 'ok';
+    responseBody.node = res.locals.updatedNode;
+
+    res.status(200).json(responseBody);
+    return;
+  }
+
+  const error = new Error(
+    'Error : no processed data transferred in nodeController.js',
+  );
+  error.status = 500;
+  next(error);
+}
+
 module.exports = {
   endOfGetNodeReq,
+  endOfPutNodeReq,
 };
