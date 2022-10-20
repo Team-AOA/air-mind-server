@@ -1,12 +1,20 @@
 const mongoose = require('mongoose');
 const autoPopulate = require('mongoose-autopopulate');
 
+const commentSchema = new mongoose.Schema(
+  {
+    author: { type: String, required: true },
+    content: { type: String, required: true },
+  },
+  { timestamps: true },
+);
+
 const nodeSchema = new mongoose.Schema(
   {
     title: { type: String },
     content: { type: String },
-    comments: [{ type: String }],
-    parent: { type: mongoose.Schema.Types.ObjectId, required: true },
+    comments: [commentSchema],
+    parent: { type: mongoose.Schema.Types.ObjectId },
     children: [
       {
         type: mongoose.Schema.Types.ObjectId,
