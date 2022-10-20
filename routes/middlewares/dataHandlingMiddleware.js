@@ -36,22 +36,61 @@ const putNodeData = async (req, res, next) => {
 const postNodeData = async (req, res, next) => {
   try {
     const { nodeId, mindMapId } = req.params;
-    const parentNode = await Node.findById(nodeId);
-    const childNode = await Node.create(req.body);
-    const { _id: childId } = childNode;
-    const { _id: parentId } = parentNode;
 
+    const childNode = await Node.create(req.body);
     childNode.mindMap = mindMapId;
-    childNode.parent = parentId;
-    parentNode.children.push(childId);
+    childNode.parent = nodeId;
 
     await childNode.save();
-    await parentNode.save();
+
+    const parentNode = await Node.findByIdAndUpdate(
+      nodeId,
+      {
+        $push: { children: childNode.id },
+      },
+      { returnOriginal: false },
+    );
 
     res.locals.childNode = childNode;
+    res.locals.parentNode = parentNode;
+
     next();
   } catch (error) {
-    error.message = `Error during creating node in function postNodeData of dataHandlingMiddleware.js${error.message}`;
+    error.message = `Error during creating node in function postNodeData of dataHandlingMiddleware.js : ${error.message}`;
+
+    next(error);
+  }
+};
+
+const postHeadNodeData = async (req, res, next) => {
+  try {
+    const newMindMap = res.locals.mindMap;
+
+    const newNodeData = {};
+    newNodeData.attribute = {
+      cordX: 500,
+      cordY: 300,
+      size: 'MEDIUM',
+      shape: 'RoundedRect',
+      color: 'YELLOW',
+      isFold: false,
+    };
+    newNodeData.mindMap = newMindMap.id;
+
+    const newNode = await Node.create(newNodeData);
+
+    newMindMap.headNode = newNode.id;
+
+    const mindMap = await MindMap.findByIdAndUpdate(newMindMap.id, newMindMap, {
+      returnOriginal: false,
+    });
+
+    res.locals.node = newNode;
+    res.locals.mindMap = mindMap;
+
+    next();
+  } catch (error) {
+    error.message = `Error during creating head node in postHeadNodeData of dataHandlingMiddleware.js : ${error.message}`;
 
     next(error);
   }
@@ -89,11 +128,31 @@ const getMindMapData = async (req, res, next) => {
   try {
     const { mindMapId } = req.params;
 
-    res.locals.mindMapData = await MindMap.findById(mindMapId);
+    res.locals.mindMap = await MindMap.findById(mindMapId);
 
     next();
   } catch (error) {
     error.message = `Error during getting mindmap in function getMindMapData of dataHandlingMiddleware.js : ${error.message}`;
+
+    next(error);
+  }
+};
+
+const postMindMapData = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const newMindMapData = {
+      author: userId,
+      access: 'private',
+    };
+    const newMindMap = await MindMap.create(newMindMapData);
+
+    res.locals.mindMap = newMindMap;
+
+    next();
+  } catch (error) {
+    error.message = `Error during posting mindmap in function postMindMapData of dataHandlingMiddleware.js : ${error.message}`;
 
     next(error);
   }
@@ -107,7 +166,7 @@ const putMindMapData = async (req, res, next) => {
     const updatedMindMap = await MindMap.findByIdAndUpdate(mindMapId, mindMap, {
       returnOriginal: false,
     });
-    res.locals.mindMapData = updatedMindMap;
+    res.locals.mindMap = updatedMindMap;
 
     next();
   } catch (error) {
@@ -136,8 +195,10 @@ module.exports = {
   getNodeData,
   putNodeData,
   postNodeData,
+  postHeadNodeData,
   makePlainObject,
   getMindMapData,
+  postMindMapData,
   putMindMapData,
   deleteMindMapData,
 };

@@ -42,7 +42,7 @@ const endOfMindMapReq = (req, res, next) => {
   try {
     const responseBody = {
       result: 'ok',
-      mindMap: res.locals.mindMapData,
+      mindMap: res.locals.mindMap,
     };
 
     res.status(200).json(responseBody);
