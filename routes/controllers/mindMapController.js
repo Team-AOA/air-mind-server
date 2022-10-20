@@ -1,6 +1,6 @@
 const MindMap = require('../../models/MindMap');
 
-const endOfGetMindMapReq = async (req, res, next) => {
+const endOfGetMindMapsReq = async (req, res, next) => {
   if (res.locals.mindMapsList) {
     const responseBody = {};
 
@@ -38,7 +38,22 @@ const getPublicMindMaps = async (req, res, next) => {
   }
 };
 
+const endOfMindMapReq = (req, res, next) => {
+  try {
+    const responseBody = {
+      result: 'ok',
+      body: res.locals.mindMapData,
+    };
+
+    res.status(200).json(responseBody);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 module.exports = {
-  endOfGetMindMapReq,
+  endOfGetMindMapsReq,
   getPublicMindMaps,
+  endOfMindMapReq,
 };

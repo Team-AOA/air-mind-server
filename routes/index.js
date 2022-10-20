@@ -1,9 +1,11 @@
 const homeRouter = require('./homeRouter');
 const userRouter = require('./userRouter');
-const nodesRouter = require('./nodesRouter');
+const nodeRouter = require('./nodeRouter');
+const mindMapRouter = require('./mindMapRouter');
 
 module.exports = {
   homeRouter,
   userRouter,
-  nodesRouter,
+  mindMapRouter,
+  nodeRouter,
 };
