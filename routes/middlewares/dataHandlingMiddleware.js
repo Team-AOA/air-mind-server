@@ -22,16 +22,12 @@ const putNodeData = async (req, res, next) => {
 
     const updatedNode = await Node.findByIdAndUpdate(nodeId, node, {
       returnOriginal: false,
-      timestamps: {
-        createdAt: true,
-        updatedAt: false,
-      },
     });
     res.locals.updatedNode = updatedNode;
 
     next();
   } catch (error) {
-    error.message = `Error during putting node in function putNodeData of dataHandlingMiddleware.js${error.message}`;
+    error.message = `Error during putting node in function putNodeData of dataHandlingMiddleware.js : ${error.message}`;
 
     next(error);
   }
@@ -103,6 +99,24 @@ const getMindMapData = async (req, res, next) => {
   }
 };
 
+const putMindMapData = async (req, res, next) => {
+  try {
+    const { mindMapId } = req.params;
+    const mindMap = req.body;
+
+    const updatedMindMap = await MindMap.findByIdAndUpdate(mindMapId, mindMap, {
+      returnOriginal: false,
+    });
+    res.locals.mindMapData = updatedMindMap;
+
+    next();
+  } catch (error) {
+    error.message = `Error during putting mindmap in function putMindMapData of dataHandlingMiddleware.js : ${error.message}`;
+
+    next(error);
+  }
+};
+
 const deleteMindMapData = async (req, res, next) => {
   try {
     const { mindMapId } = req.params;
@@ -124,5 +138,6 @@ module.exports = {
   postNodeData,
   makePlainObject,
   getMindMapData,
+  putMindMapData,
   deleteMindMapData,
 };

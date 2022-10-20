@@ -5,7 +5,7 @@ const endOfGetMindMapsReq = async (req, res, next) => {
     const responseBody = {};
 
     responseBody.result = 'ok';
-    responseBody.mindmaps = res.locals.mindMapsList;
+    responseBody.mindMap = res.locals.mindMapsList;
     responseBody.count = res.locals.mindMapsList.length;
 
     res.status(200).json(responseBody);
@@ -27,7 +27,7 @@ const getPublicMindMaps = async (req, res, next) => {
     const responseBody = {};
 
     responseBody.result = 'ok';
-    responseBody.data = publicMindMaps;
+    responseBody.mindMap = publicMindMaps;
     responseBody.count = mindMapCount;
 
     res.status(200).json(responseBody);
@@ -42,7 +42,7 @@ const endOfMindMapReq = (req, res, next) => {
   try {
     const responseBody = {
       result: 'ok',
-      body: res.locals.mindMapData,
+      mindMap: res.locals.mindMapData,
     };
 
     res.status(200).json(responseBody);
