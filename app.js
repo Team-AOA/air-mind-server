@@ -2,7 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 
-const { homeRouter, userRouter, nodesRouter } = require('./routes/index');
+const {
+  homeRouter,
+  userRouter,
+  mindMapRouter,
+  nodeRouter,
+} = require('./routes/index');
 
 const app = express();
 
@@ -20,7 +25,8 @@ app.use((req, res, next) => {
 
 app.use('/', homeRouter);
 app.use('/users', userRouter);
-app.use('/users/:userId/mind-maps/:mindMapId/nodes', nodesRouter);
+app.use('/users/:userId/mind-maps', mindMapRouter);
+app.use('/users/:userId/mind-maps/:mindMapId/nodes', nodeRouter);
 
 app.use((req, res, next) => {
   const error = new Error('Page Not Found');

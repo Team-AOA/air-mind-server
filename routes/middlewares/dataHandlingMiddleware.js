@@ -61,21 +61,6 @@ const postNodeData = async (req, res, next) => {
   }
 };
 
-const deleteMindMapData = async (req, res, next) => {
-  try {
-    const { mindMapId } = req.params;
-
-    await Node.deleteMany({ mindMap: mindMapId });
-    await MindMap.deleteOne({ _id: mindMapId });
-
-    res.status(204);
-    return;
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-};
-
 const makePlainObject = (req, res, next) => {
   try {
     const nestedObjectQueue = [res.locals.nodesNestedObject];
@@ -106,24 +91,29 @@ const makePlainObject = (req, res, next) => {
 
 const getMindMapData = async (req, res, next) => {
   try {
-    const { userId } = req.params;
-    const max = req.query.max || 15;
-    const access =
-      req.query.access === 'mixed'
-        ? ['public', 'private']
-        : req.query.access || 'public';
+    const { mindMapId } = req.params;
 
-    res.locals.mindMapsList = await MindMap.find({
-      author: userId,
-      access,
-    })
-      .sort({ date: -1 })
-      .limit(max);
+    res.locals.mindMapData = await MindMap.findById(mindMapId);
 
     next();
   } catch (error) {
-    error.message = `Error during getting mindMaps in function getMindMapData of dataHandlingMiddleware.js : ${error.message}`;
+    error.message = `Error during getting mindmap in function getMindMapData of dataHandlingMiddleware.js : ${error.message}`;
 
+    next(error);
+  }
+};
+
+const deleteMindMapData = async (req, res, next) => {
+  try {
+    const { mindMapId } = req.params;
+
+    await Node.deleteMany({ mindMap: mindMapId });
+    await MindMap.deleteOne({ _id: mindMapId });
+
+    res.status(204);
+    return;
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 };
