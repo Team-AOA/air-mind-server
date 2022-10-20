@@ -39,17 +39,39 @@ const putNodeData = async (req, res, next) => {
 
 const postNodeData = async (req, res, next) => {
   try {
-    const { nodeId } = req.params;
+    const { nodeId, mindMapId } = req.params;
     const parentNode = await Node.findById(nodeId);
-    const childNode = await Node.create({ parent: nodeId });
-    const { _id: id } = childNode;
+    const childNode = await Node.create(req.body);
+    const { _id: childId } = childNode;
+    const { _id: parentId } = parentNode;
 
-    await parentNode.children.push(id).save();
+    childNode.mindMap = mindMapId;
+    childNode.parent = parentId;
+    parentNode.children.push(childId);
+
+    await childNode.save();
+    await parentNode.save();
 
     res.locals.childNode = childNode;
+    next();
   } catch (error) {
     error.message = `Error during creating node in function postNodeData of dataHandlingMiddleware.js${error.message}`;
 
+    next(error);
+  }
+};
+
+const deleteMindMapData = async (req, res, next) => {
+  try {
+    const { mindMapId } = req.params;
+
+    await Node.deleteMany({ mindMap: mindMapId });
+    await MindMap.deleteOne({ _id: mindMapId });
+
+    res.status(204);
+    return;
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 };
@@ -99,10 +121,10 @@ const getMindMapData = async (req, res, next) => {
       .limit(max);
 
     next();
-  } catch (err) {
-    err.message = `Error during getting mindMaps in function getMindMapData of dataHandlingMiddleware.js : ${err.message}`;
+  } catch (error) {
+    error.message = `Error during getting mindMaps in function getMindMapData of dataHandlingMiddleware.js : ${error.message}`;
 
-    next(err);
+    next(error);
   }
 };
 
@@ -112,4 +134,5 @@ module.exports = {
   postNodeData,
   makePlainObject,
   getMindMapData,
+  deleteMindMapData,
 };

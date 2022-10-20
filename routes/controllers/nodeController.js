@@ -36,11 +36,11 @@ const endOfPutNodeReq = (req, res, next) => {
 };
 
 const endOfPostNodeReq = (req, res, next) => {
-  if (res.locals.createdNode) {
+  if (res.locals.childNode) {
     const responseBody = {};
 
     responseBody.result = 'ok';
-    responseBody.node = res.locals.createdNode;
+    responseBody.node = res.locals.childNode;
 
     res.status(201).json(responseBody);
     return;

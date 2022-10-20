@@ -15,6 +15,7 @@ const nodeSchema = new mongoose.Schema(
     content: { type: String },
     comments: [commentSchema],
     parent: { type: mongoose.Schema.Types.ObjectId },
+    mindMap: { type: mongoose.Schema.Types.ObjectId },
     children: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +25,7 @@ const nodeSchema = new mongoose.Schema(
     ],
     attribute: {
       shape: { type: String, required: true },
-      size: { type: String, required: true, default: 'medium' },
+      size: { type: String, required: true, default: 'mdeium' },
       cordX: { type: Number, required: true },
       cordY: { type: Number, required: true },
       color: { type: String, required: true },
