@@ -15,6 +15,7 @@ const nodeSchema = new mongoose.Schema(
     content: { type: String },
     comments: [commentSchema],
     parent: { type: mongoose.Schema.Types.ObjectId },
+    mindMap: { type: mongoose.Schema.Types.ObjectId },
     children: [
       {
         type: mongoose.Schema.Types.ObjectId,
