@@ -83,7 +83,12 @@ const deleteNodeData = async (req, res, next) => {
 const postHeadNodeData = async (req, res, next) => {
   try {
     const { mindMap } = res.locals;
-    const childNode = await Node.create(req.body);
+    const childNode = await Node.create({
+      attribute: {
+        cordX: 500,
+        cordY: 300,
+      },
+    });
 
     if (!mindMap) {
       throw new Error('No mind map error!!');
@@ -98,7 +103,7 @@ const postHeadNodeData = async (req, res, next) => {
     res.locals.childNode = childNode;
     next();
   } catch (error) {
-    error.message = `Error during creating node in function postNodeData of dataHandlingMiddleware.js${error.message}`;
+    error.message = `Error during creating node in function postHeadNodeData of dataHandlingMiddleware.js${error.message}`;
 
     next(error);
   }
@@ -106,6 +111,11 @@ const postHeadNodeData = async (req, res, next) => {
 
 const makePlainObject = (req, res, next) => {
   try {
+    if (!res.locals.nodesNestedObject) {
+      const error = new Error('No node data available!');
+      throw error;
+    }
+
     const nestedObjectQueue = [res.locals.nodesNestedObject];
     const plainObject = {};
     let nodeCount = req.query.max || 30;
@@ -168,8 +178,8 @@ const putMindMapData = async (req, res, next) => {
 
 const postMindMapData = async (req, res, next) => {
   try {
-    const { userId } = req.params;
-    const mindMap = MindMap.create({
+    const { userId } = res.locals;
+    const mindMap = await MindMap.create({
       author: userId,
       access: 'private',
     });

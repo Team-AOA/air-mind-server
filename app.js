@@ -25,8 +25,22 @@ app.use((req, res, next) => {
 
 app.use('/', homeRouter);
 app.use('/users', userRouter);
-app.use('/users/:userId/mind-maps', mindMapRouter);
-app.use('/users/:userId/mind-maps/:mindMapId/nodes', nodeRouter);
+app.use(
+  '/users/:userId/mind-maps',
+  (req, res, next) => {
+    res.locals.userId = req.params.userId;
+    next();
+  },
+  mindMapRouter,
+);
+app.use(
+  '/users/:userId/mind-maps/:mindMapId/nodes',
+  (req, res, next) => {
+    res.locals = { ...req.params };
+    next();
+  },
+  nodeRouter,
+);
 
 app.use((req, res, next) => {
   const error = new Error('Page Not Found');

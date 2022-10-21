@@ -18,8 +18,11 @@ const {
 router
   .route('/:mindMapId')
   .get(auth, getMindMapData, endOfMindMapReq)
-  .post(auth, postMindMapData, postHeadNodeData, endOfPostMindMapReq)
   .put(auth, putMindMapData, endOfMindMapReq)
   .delete(auth, deleteMindMapData, endOfMindMapReq);
+
+router
+  .route('/')
+  .post(auth, postMindMapData, postHeadNodeData, endOfPostMindMapReq);
 
 module.exports = router;
