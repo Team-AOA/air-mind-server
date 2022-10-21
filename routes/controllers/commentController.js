@@ -3,7 +3,6 @@ const Node = require('../../models/Node');
 const getAllComments = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
-    const responseBody = {};
 
     const foundedNode = await Node.findById(nodeId);
 
@@ -14,6 +13,7 @@ const getAllComments = async (req, res, next) => {
       return;
     }
 
+    const responseBody = {};
     responseBody.result = 'ok';
     responseBody.data = foundedNode.comments;
 
@@ -27,13 +27,11 @@ const getAllComments = async (req, res, next) => {
 const createComment = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
-    const { comment } = req.body;
-    const responseBody = {};
-    // TODO: req.user 추가
+    const { userName, comment } = req.body;
 
     const newComment = {
       comments: {
-        author: 'alex',
+        author: userName,
         content: comment,
       },
     };
@@ -43,6 +41,7 @@ const createComment = async (req, res, next) => {
       {
         $addToSet: newComment,
       },
+      { returnOriginal: false },
     );
 
     if (!updatedNode) {
@@ -52,6 +51,7 @@ const createComment = async (req, res, next) => {
       return;
     }
 
+    const responseBody = {};
     responseBody.result = 'ok';
     responseBody.data = updatedNode.comments;
 

@@ -52,8 +52,15 @@ const endOfPostNodeReq = (req, res, next) => {
   next(error);
 };
 
+const endOfDeleteNodeReq = (req, res) => {
+  res.status(200).json({
+    result: 'ok',
+  });
+};
+
 module.exports = {
   endOfGetNodeReq,
   endOfPutNodeReq,
   endOfPostNodeReq,
+  endOfDeleteNodeReq,
 };

@@ -4,18 +4,22 @@ const router = express.Router();
 
 const { auth } = require('./middlewares/authMiddleware');
 const {
-  getMindMapData,
-  postMindMapData,
   postHeadNodeData,
+  getMindMapData,
   putMindMapData,
+  postMindMapData,
+  deleteMindMapData,
 } = require('./middlewares/dataHandlingMiddleware');
-const { endOfMindMapReq } = require('./controllers/mindMapController');
+const {
+  endOfMindMapReq,
+  endOfPostMindMapReq,
+} = require('./controllers/mindMapController');
 
 router
   .route('/:mindMapId')
   .get(auth, getMindMapData, endOfMindMapReq)
-  .post(auth, postMindMapData, postHeadNodeData, endOfMindMapReq)
-  .put(auth, putMindMapData, endOfMindMapReq);
-// .delete(auth, deleteMindMapData, deleteNodeData, endOfDeleteReq);
+  .post(auth, postMindMapData, postHeadNodeData, endOfPostMindMapReq)
+  .put(auth, putMindMapData, endOfMindMapReq)
+  .delete(auth, deleteMindMapData, endOfMindMapReq);
 
 module.exports = router;
