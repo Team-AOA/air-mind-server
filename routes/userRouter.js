@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 
 const { auth } = require('./middlewares/authMiddleware');
-const { getMindMapData } = require('./middlewares/dataHandlingMiddleware');
-const { endOfGetMindMapsReq } = require('./controllers/mindMapController');
+const { getMyMindMapList } = require('./middlewares/dataHandlingMiddleware');
+const { endOfMindMapListReq } = require('./controllers/mindMapController');
 
-router.get('/:userId/mind-maps', auth, getMindMapData, endOfGetMindMapsReq);
+router.get('/:userId/mind-maps', auth, getMyMindMapList, endOfMindMapListReq);
 
 module.exports = router;

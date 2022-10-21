@@ -8,11 +8,13 @@ const {
   putNodeData,
   makePlainObject,
   postNodeData,
+  deleteNodeData,
 } = require('./middlewares/dataHandlingMiddleware');
 const {
   endOfGetNodeReq,
   endOfPutNodeReq,
   endOfPostNodeReq,
+  endOfDeleteNodeReq,
 } = require('./controllers/nodeController');
 const {
   getAllComments,
@@ -23,7 +25,8 @@ router
   .route('/:nodeId')
   .get(auth, getNodeData, makePlainObject, endOfGetNodeReq)
   .put(auth, putNodeData, endOfPutNodeReq)
-  .post(auth, postNodeData, endOfPostNodeReq);
+  .post(auth, postNodeData, endOfPostNodeReq)
+  .delete(auth, deleteNodeData, endOfDeleteNodeReq);
 
 router.route('/:nodeId/comments').get(getAllComments).post(createComment);
 

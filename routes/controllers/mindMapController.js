@@ -1,6 +1,4 @@
-const MindMap = require('../../models/MindMap');
-
-const endOfGetMindMapsReq = async (req, res, next) => {
+const endOfMindMapListReq = async (req, res, next) => {
   if (res.locals.mindMapsList) {
     const responseBody = {};
 
@@ -19,25 +17,6 @@ const endOfGetMindMapsReq = async (req, res, next) => {
   next(error);
 };
 
-const getPublicMindMaps = async (req, res, next) => {
-  try {
-    const max = req.query.max || 15;
-    const publicMindMaps = await MindMap.find({ access: 'public' }).limit(max);
-    const mindMapCount = publicMindMaps.length;
-    const responseBody = {};
-
-    responseBody.result = 'ok';
-    responseBody.mindMap = publicMindMaps;
-    responseBody.count = mindMapCount;
-
-    res.status(200).json(responseBody);
-    return;
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-};
-
 const endOfMindMapReq = (req, res, next) => {
   try {
     const responseBody = {
@@ -52,8 +31,33 @@ const endOfMindMapReq = (req, res, next) => {
   }
 };
 
+const endOfPostMindMapReq = (req, res, next) => {
+  try {
+    const responseBody = {
+      result: 'ok',
+      mindMap: res.locals.mindMap,
+      node: res.locals.childNode,
+    };
+
+    res.status(200).json(responseBody);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+const endOfDeleteMindMapReq = (req, res, next) => {
+  try {
+    res.status(204).json({ result: 'ok' });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 module.exports = {
-  endOfGetMindMapsReq,
-  getPublicMindMaps,
+  endOfMindMapListReq,
   endOfMindMapReq,
+  endOfPostMindMapReq,
+  endOfDeleteMindMapReq,
 };
