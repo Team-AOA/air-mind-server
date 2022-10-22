@@ -58,7 +58,7 @@ const createComment = async (req, res, next) => {
     res.status(200).json(responseBody);
     return;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     next(error);
   }
 };
