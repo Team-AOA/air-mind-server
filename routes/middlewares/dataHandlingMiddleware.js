@@ -148,7 +148,7 @@ const getMindMapData = async (req, res, next) => {
   try {
     const { mindMapId } = req.params;
 
-    res.locals.mindMapData = await MindMap.findById(mindMapId);
+    res.locals.mindMap = await MindMap.findById(mindMapId);
 
     next();
   } catch (error) {
