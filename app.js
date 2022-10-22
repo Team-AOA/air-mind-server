@@ -48,15 +48,17 @@ app.use((req, res, next) => {
   next(error);
 });
 
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   const responseBody = {
     result: 'error',
     error: {
-      message: err.message,
+      message: err.status >= 500 ? 'Internal Server Error' : err.message,
       code: err.status || 500,
     },
   };
 
+  res.status(err.status || 500);
   res.json(responseBody);
 });
 
