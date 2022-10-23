@@ -13,6 +13,15 @@ const nodeSchema = new mongoose.Schema(
   {
     title: { type: String },
     content: { type: String },
+    images: {
+      type: [
+        {
+          path: { type: String, required: true },
+          originalName: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
     comments: [commentSchema],
     parent: { type: mongoose.Schema.Types.ObjectId },
     mindMap: { type: mongoose.Schema.Types.ObjectId },
