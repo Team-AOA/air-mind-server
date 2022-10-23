@@ -9,7 +9,7 @@ const mindMapSchema = new mongoose.Schema(
       required: true,
     },
     access: { type: String, required: true, default: 'private' },
-    headNode: { type: String },
+    headNode: { type: mongoose.Schema.Types.ObjectId },
   },
   { timestamps: true },
 );
