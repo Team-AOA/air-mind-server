@@ -55,9 +55,26 @@ const endOfDeleteMindMapReq = (req, res, next) => {
   }
 };
 
+const endOfMindMapAccessReq = (req, res, next) => {
+  try {
+    const response = {
+      result: 'ok',
+      access: res.locals.access,
+    };
+    if (res.locals.access === 'public') {
+      response.mindMap = res.locals.mindMap;
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 module.exports = {
   endOfMindMapListReq,
   endOfMindMapReq,
   endOfPostMindMapReq,
   endOfDeleteMindMapReq,
+  endOfMindMapAccessReq,
 };

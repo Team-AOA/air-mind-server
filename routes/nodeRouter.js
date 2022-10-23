@@ -9,6 +9,7 @@ const {
   makePlainObject,
   postNodeData,
   deleteNodeData,
+  isPublicNode,
 } = require('./middlewares/dataHandlingMiddleware');
 const {
   endOfGetNodeReq,
@@ -23,7 +24,7 @@ const {
 
 router
   .route('/:nodeId')
-  .get(auth, getNodeData, makePlainObject, endOfGetNodeReq)
+  .get(getNodeData, makePlainObject, isPublicNode, auth, endOfGetNodeReq)
   .put(auth, putNodeData, endOfPutNodeReq)
   .post(auth, postNodeData, endOfPostNodeReq)
   .delete(auth, deleteNodeData, endOfDeleteNodeReq);

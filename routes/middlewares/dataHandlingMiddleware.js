@@ -148,7 +148,7 @@ const getMindMapData = async (req, res, next) => {
   try {
     const { mindMapId } = req.params;
 
-    res.locals.mindMap = await MindMap.findById(mindMapId);
+    res.locals.mindMap = await MindMap.findById(mindMapId).populate();
 
     next();
   } catch (error) {
@@ -208,6 +208,22 @@ const deleteMindMapData = async (req, res, next) => {
   }
 };
 
+const getMindMapAccessData = async (req, res, next) => {
+  try {
+    const { mindMapId } = req.params;
+
+    const mindMap = await MindMap.findById(mindMapId).populate('author');
+
+    res.locals.mindMap = mindMap;
+    res.locals.access = mindMap.access;
+
+    next();
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 const getMyMindMapList = async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -222,7 +238,8 @@ const getMyMindMapList = async (req, res, next) => {
       access,
     })
       .sort({ date: -1 })
-      .limit(max);
+      .limit(max)
+      .populate('author');
 
     next();
   } catch (error) {
@@ -236,11 +253,35 @@ const getPublicMindMapList = async (req, res, next) => {
     const max = req.query.max || 15;
     res.locals.mindMapsList = await MindMap.find({ access: 'public' })
       .sort({ date: -1 })
-      .limit(max);
+      .limit(max)
+      .populate('author');
 
     next();
   } catch (error) {
     error.message = `Error during getting public mindMaps in dataHandlingMiddleware.js : ${error.message}`;
+    next(error);
+  }
+};
+
+const isPublicNode = async (req, res, next) => {
+  try {
+    const { mindMapId } = res.locals;
+    const mindMap = await MindMap.findById(mindMapId);
+
+    if (mindMap.access === 'public') {
+      const responseBody = {};
+
+      responseBody.result = 'ok';
+      responseBody.node = res.locals.nodesPlainObject;
+      responseBody.count = Object.keys(responseBody.node).length;
+
+      res.status(200).json(responseBody);
+      return;
+    }
+
+    next();
+  } catch (error) {
+    error.message = `Error during checking if mindMap is public in dataHandlingMiddleware : ${error.message}`;
     next(error);
   }
 };
@@ -256,6 +297,8 @@ module.exports = {
   putMindMapData,
   postMindMapData,
   deleteMindMapData,
+  getMindMapAccessData,
   getMyMindMapList,
   getPublicMindMapList,
+  isPublicNode,
 };
