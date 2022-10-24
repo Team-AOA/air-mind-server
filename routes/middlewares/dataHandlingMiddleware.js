@@ -100,8 +100,16 @@ const deleteNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
 
-    const deleteTarget = await nodeDeleteHelper(nodeId);
+    const { parent: parentId } = await Node.findById(nodeId);
+    const updateParentTarget = await Node.findById(parentId);
 
+    const childrenList = updateParentTarget.children;
+    childrenList.splice(childrenList.indexOf(nodeId), 1);
+    updateParentTarget.children = childrenList;
+
+    updateParentTarget.save();
+
+    const deleteTarget = await nodeDeleteHelper(nodeId);
     await Node.deleteMany({ _id: deleteTarget });
 
     next();
