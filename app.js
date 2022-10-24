@@ -16,6 +16,7 @@ require('./configs/dbConfig')();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/tmpImages', express.static('./tmpImages'));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
