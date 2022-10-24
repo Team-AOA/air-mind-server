@@ -2,7 +2,10 @@ const debug = require('debug')('air-mind-server:server');
 const http = require('http');
 const app = require('../app');
 
+const webSocket = require('../webSocket');
+
 const server = http.createServer(app);
+webSocket(server);
 
 const normalizePort = val => {
   const port = parseInt(val, 10);
