@@ -8,8 +8,6 @@ const webSocket = server => {
   });
 
   io.on('connection', socket => {
-    console.log('socket connected');
-
     socket.on('userSand', jsonData => {
       const data = JSON.parse(jsonData);
       const { mindMapId } = data;
@@ -26,14 +24,24 @@ const webSocket = server => {
     });
 
     socket.on('contentChange', (mindMapId, nodeId, updatedContent) => {
-      console.log(updatedContent);
       io.to(mindMapId).emit('receiveContent', nodeId, updatedContent);
+    });
+
+    socket.on('addNode', (id, headId, userId, mindMapId, nodeId) => {
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveAddNode', id, headId, userId, mindMapId, nodeId);
+    });
+
+    socket.on('deleteNode', (nodeId, nodeData, userId, mindMapId) => {
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveDeleteNode', nodeId, nodeData, userId, mindMapId);
     });
 
     socket.on(
       'nodePositionChange',
       (mindMapId, nodeId, updatedPositionX, updatedPositionY) => {
-        console.log('updatedPositionX', updatedPositionX);
         io.to(mindMapId).emit(
           'receivePosition',
           nodeId,
