@@ -30,11 +30,6 @@ const webSocket = server => {
       io.to(mindMapId).emit('receiveContent', nodeId, updatedContent);
     });
 
-    socket.on('contentChange', (mindMapId, nodeId, updatedContent) => {
-      console.log(updatedContent);
-      io.to(mindMapId).emit('receiveContent', nodeId, updatedContent);
-    });
-
     socket.on(
       'nodePositionChange',
       (mindMapId, nodeId, updatedPositionX, updatedPositionY) => {
