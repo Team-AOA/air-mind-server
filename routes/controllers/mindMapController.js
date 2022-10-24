@@ -48,7 +48,8 @@ const endOfPostMindMapReq = (req, res, next) => {
 
 const endOfDeleteMindMapReq = (req, res, next) => {
   try {
-    res.status(204).json({ result: 'ok' });
+    const response = { result: 'ok' };
+    res.json(response);
   } catch (error) {
     console.error(error);
     next(error);
