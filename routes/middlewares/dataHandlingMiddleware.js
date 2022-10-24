@@ -6,7 +6,6 @@ const nodeDeleteHelper = require('../lib/nodeDeleteHelper');
 const getNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
-
     res.locals.nodesNestedObject = await Node.findById(nodeId).setOptions({
       autopopulate: { maxDepth: 5 },
     });
@@ -22,6 +21,39 @@ const getNodeData = async (req, res, next) => {
 const putNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
+
+    if (res.req.files) {
+      const images = res.req.files;
+
+      const updatedNode = await Node.findById(nodeId);
+
+      if (updatedNode.images.length > 10) {
+        const error = new Error(
+          'The maximum number of images has been exceeded.',
+        );
+        error.status = 400;
+        next(error);
+        return;
+      }
+
+      images.forEach(async image => {
+        const imageData = {
+          path: image.path,
+          originalName: image.originalname,
+        };
+
+        try {
+          updatedNode.images.push(imageData);
+          await updatedNode.save();
+        } catch (error) {
+          // TODO: 여러 개 넣을 때 에러남, 근데 저장은 됨. 개선 필요
+        }
+      });
+
+      res.locals.updatedNode = updatedNode;
+
+      next();
+    }
     const node = req.body;
 
     const updatedNode = await Node.findByIdAndUpdate(nodeId, node, {
@@ -135,6 +167,14 @@ const makePlainObject = (req, res, next) => {
     }
 
     res.locals.nodesPlainObject = plainObject;
+
+    const responseBody = {};
+
+    responseBody.result = 'ok';
+    responseBody.node = res.locals.nodesPlainObject;
+    responseBody.count = Object.keys(responseBody.node).length;
+
+    res.status(200).json(responseBody);
 
     next();
   } catch (error) {
