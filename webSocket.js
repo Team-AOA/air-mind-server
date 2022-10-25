@@ -7,7 +7,10 @@ const webSocket = server => {
     },
   });
 
+  const socketSet = new Set();
+
   io.on('connection', socket => {
+    socketSet.add(socket.id);
     socket.on('userSand', jsonData => {
       const data = JSON.parse(jsonData);
       const { mindMapId } = data;
@@ -73,15 +76,33 @@ const webSocket = server => {
       socket.broadcast.to(mindMapId).emit('receiveDeleteMindMap', result);
     });
 
+    socket.on('enterNode', (currentUser, ancestorList, mindMapId) => {
+      const { _id: currentUserId } = currentUser;
+      const { profile } = currentUser;
+
+      socket.broadcast
+        .to(mindMapId)
+        .emit('insertUser', currentUserId, profile, ancestorList);
+    });
+
+    socket.on('leaveNode', (currentUser, mindMapId) => {
+      const { _id: currentUserId } = currentUser;
+
+      socket.broadcast.to(mindMapId).emit('deleteUser', currentUserId);
+    });
+
     socket.on('joinMindMap', mindMapId => {
+      console.log('Socket added!!', socketSet);
       socket.join(mindMapId);
     });
 
     socket.on('leaveMindMap', mindMapId => {
+      console.log('Socket leaved!!', socketSet);
       socket.leave(mindMapId);
     });
 
     socket.on('disconnect', () => {
+      socketSet.delete(socket.id);
       console.log('user disconnected');
     });
   });

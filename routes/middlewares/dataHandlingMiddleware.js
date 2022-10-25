@@ -1,5 +1,6 @@
 const Node = require('../../models/Node');
 const MindMap = require('../../models/MindMap');
+const User = require('../../models/User');
 
 const nodeDeleteHelper = require('../lib/nodeDeleteHelper');
 
@@ -223,8 +224,9 @@ const putMindMapData = async (req, res, next) => {
 const postMindMapData = async (req, res, next) => {
   try {
     const { userId } = res.locals;
+    const user = User.findById(userId);
     const mindMap = await MindMap.create({
-      author: userId,
+      author: user,
       access: 'private',
     });
 
