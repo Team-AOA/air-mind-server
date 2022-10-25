@@ -49,7 +49,6 @@ const webSocket = server => {
       },
     );
 
-    // 폴드 작업중
     socket.on('fold', (isFold, mindMapId, nodeId) => {
       socket.broadcast.to(mindMapId).emit('receiveFold', isFold, nodeId);
     });
@@ -59,7 +58,19 @@ const webSocket = server => {
     });
 
     socket.on('mindMapTitleChange', (mindMapId, mindMapData, value) => {
-      io.to(mindMapId).emit('receiveMindMapTitleChange', mindMapData, value);
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveMindMapTitleChange', mindMapData, value);
+    });
+
+    socket.on('publicOptionChange', (mindMapId, mindMapData, value) => {
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receivePublicOptionChange', mindMapData, value);
+    });
+
+    socket.on('deleteMindMap', (mindMapId, result) => {
+      socket.broadcast.to(mindMapId).emit('receiveDeleteMindMap', result);
     });
 
     socket.on('joinMindMap', mindMapId => {
