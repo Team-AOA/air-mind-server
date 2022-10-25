@@ -210,7 +210,7 @@ const putMindMapData = async (req, res, next) => {
     const updatedMindMap = await MindMap.findByIdAndUpdate(mindMapId, mindMap, {
       returnOriginal: false,
     });
-    res.locals.mindMapData = updatedMindMap;
+    res.locals.mindMap = updatedMindMap;
 
     next();
   } catch (error) {

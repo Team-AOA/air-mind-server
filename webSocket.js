@@ -27,16 +27,14 @@ const webSocket = server => {
       io.to(mindMapId).emit('receiveContent', nodeId, updatedContent);
     });
 
-    socket.on('addNode', (id, headId, userId, mindMapId, nodeId) => {
-      socket.broadcast
-        .to(mindMapId)
-        .emit('receiveAddNode', id, headId, userId, mindMapId, nodeId);
+    socket.on('addNode', (mindMapId, newNode, nodeId) => {
+      socket.broadcast.to(mindMapId).emit('receiveAddNode', newNode, nodeId);
     });
 
     socket.on('deleteNode', (nodeId, nodeData, userId, mindMapId) => {
       socket.broadcast
         .to(mindMapId)
-        .emit('receiveDeleteNode', nodeId, nodeData, userId, mindMapId);
+        .emit('receiveDeleteNode', nodeId, nodeData);
     });
 
     socket.on(
@@ -51,15 +49,28 @@ const webSocket = server => {
       },
     );
 
-    // 폴드기능 작업중
-    socket.on('fold', (temp, userId, isFold, mindMapId, nodeId, setFold) => {
-      socket.broadcast
-        .to(mindMapId)
-        .emit('receiveFold', temp, userId, isFold, mindMapId, nodeId, setFold);
+    socket.on('fold', (isFold, mindMapId, nodeId) => {
+      socket.broadcast.to(mindMapId).emit('receiveFold', isFold, nodeId);
+    });
+
+    socket.on('sizeChange', (mindMapId, nodeId, change) => {
+      socket.broadcast.to(mindMapId).emit('receiveSizeChange', nodeId, change);
     });
 
     socket.on('mindMapTitleChange', (mindMapId, mindMapData, value) => {
-      io.to(mindMapId).emit('receiveMindMapTitleChange', mindMapData, value);
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveMindMapTitleChange', mindMapData, value);
+    });
+
+    socket.on('publicOptionChange', (mindMapId, mindMapData, value) => {
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receivePublicOptionChange', mindMapData, value);
+    });
+
+    socket.on('deleteMindMap', (mindMapId, result) => {
+      socket.broadcast.to(mindMapId).emit('receiveDeleteMindMap', result);
     });
 
     socket.on('joinMindMap', mindMapId => {
