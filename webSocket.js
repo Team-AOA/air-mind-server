@@ -51,6 +51,17 @@ const webSocket = server => {
       },
     );
 
+    // 폴드기능 작업중
+    socket.on('fold', (temp, userId, isFold, mindMapId, nodeId, setFold) => {
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveFold', temp, userId, isFold, mindMapId, nodeId, setFold);
+    });
+
+    socket.on('mindMapTitleChange', (mindMapId, mindMapData, value) => {
+      io.to(mindMapId).emit('receiveMindMapTitleChange', mindMapData, value);
+    });
+
     socket.on('joinMindMap', mindMapId => {
       socket.join(mindMapId);
     });
