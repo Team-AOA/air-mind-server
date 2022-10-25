@@ -163,7 +163,11 @@ const makePlainObject = (req, res, next) => {
     while (nestedObjectQueue.length > 0 && nodeCount > 0) {
       const tempObject = nestedObjectQueue.shift();
 
-      if (tempObject.children) {
+      if (
+        tempObject.children &&
+        tempObject.children.length > 0 &&
+        Object.keys(tempObject.children[0]).length > 0
+      ) {
         nestedObjectQueue.push(...tempObject.children);
 
         tempObject.children = tempObject.children.map(child => child.id);
@@ -175,14 +179,6 @@ const makePlainObject = (req, res, next) => {
     }
 
     res.locals.nodesPlainObject = plainObject;
-
-    const responseBody = {};
-
-    responseBody.result = 'ok';
-    responseBody.node = res.locals.nodesPlainObject;
-    responseBody.count = Object.keys(responseBody.node).length;
-
-    res.status(200).json(responseBody);
 
     next();
   } catch (error) {
