@@ -67,7 +67,7 @@ const endOfMindMapAccessReq = (req, res, next) => {
       response.mindMap = res.locals.mindMap;
     }
 
-    if (req.user && req.user.email === res.locals.mindMap.author.email) {
+    if (req.user) {
       response.mindMap = res.locals.mindMap;
     }
 
