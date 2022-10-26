@@ -27,12 +27,12 @@ const getAllComments = async (req, res, next) => {
 const createComment = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
-    const { userName, comment } = req.body;
-
+    const { author, content, profile } = req.body;
     const newComment = {
       comments: {
-        author: userName,
-        content: comment,
+        author,
+        content,
+        profile,
       },
     };
 
