@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
     cb(null, 'tmpImages/');
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}-${file.fieldname}`);
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
   limits: { fileSize: 5 * 1024 * 1024 },
 });
@@ -42,6 +42,6 @@ router
   .post(auth, postNodeData, endOfPostNodeReq)
   .delete(auth, deleteNodeData, endOfDeleteNodeReq);
 
-router.route('/:nodeId/comments').get(getAllComments).post(createComment);
+router.route('/:nodeId/comments').put(getAllComments).post(createComment);
 
 module.exports = router;

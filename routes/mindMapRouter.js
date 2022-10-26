@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('./middlewares/authMiddleware');
+const authWithoutError = require('./middlewares/authWithoutErrorMiddleware');
 const {
   postHeadNodeData,
   getMindMapData,
@@ -30,6 +31,6 @@ router
 
 router
   .route('/:mindMapId/access')
-  .get(getMindMapAccessData, endOfMindMapAccessReq);
+  .get(authWithoutError, getMindMapAccessData, endOfMindMapAccessReq);
 
 module.exports = router;
