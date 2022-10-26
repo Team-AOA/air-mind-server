@@ -62,9 +62,15 @@ const endOfMindMapAccessReq = (req, res, next) => {
       result: 'ok',
       access: res.locals.access,
     };
+
     if (res.locals.access === 'public') {
       response.mindMap = res.locals.mindMap;
     }
+
+    if (req.user && req.user.email === res.locals.mindMap.author.email) {
+      response.mindMap = res.locals.mindMap;
+    }
+
     res.status(200).json(response);
   } catch (error) {
     console.error(error);
