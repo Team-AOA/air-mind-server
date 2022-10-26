@@ -11,23 +11,19 @@ const webSocket = server => {
 
   io.on('connection', socket => {
     socketSet.add(socket.id);
-    socket.on('userSand', jsonData => {
-      const data = JSON.parse(jsonData);
-      const { mindMapId } = data;
-
-      io.to(mindMapId).emit('broadcast', jsonData);
-    });
 
     socket.on('colorChange', (mindMapId, nodeId, color) => {
-      io.to(mindMapId).emit('receiveColor', nodeId, color);
+      socket.broadcast.to(mindMapId).emit('receiveColor', nodeId, color);
     });
 
     socket.on('titleChange', (mindMapId, nodeId, title) => {
-      io.to(mindMapId).emit('receiveTitle', nodeId, title);
+      socket.broadcast.to(mindMapId).emit('receiveTitle', nodeId, title);
     });
 
     socket.on('contentChange', (mindMapId, nodeId, updatedContent) => {
-      io.to(mindMapId).emit('receiveContent', nodeId, updatedContent);
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveContent', nodeId, updatedContent);
     });
 
     socket.on('addNode', (mindMapId, newNode, nodeId) => {
@@ -43,12 +39,9 @@ const webSocket = server => {
     socket.on(
       'nodePositionChange',
       (mindMapId, nodeId, updatedPositionX, updatedPositionY) => {
-        io.to(mindMapId).emit(
-          'receivePosition',
-          nodeId,
-          updatedPositionX,
-          updatedPositionY,
-        );
+        socket.broadcast
+          .to(mindMapId)
+          .emit('receivePosition', nodeId, updatedPositionX, updatedPositionY);
       },
     );
 

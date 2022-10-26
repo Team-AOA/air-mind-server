@@ -224,7 +224,7 @@ const putMindMapData = async (req, res, next) => {
 const postMindMapData = async (req, res, next) => {
   try {
     const { userId } = res.locals;
-    const user = User.findById(userId);
+    const user = await User.findById(userId);
     const mindMap = await MindMap.create({
       author: user,
       access: 'private',
