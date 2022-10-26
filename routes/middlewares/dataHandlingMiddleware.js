@@ -208,6 +208,10 @@ const putMindMapData = async (req, res, next) => {
     const { mindMapId } = req.params;
     const mindMap = req.body;
 
+    if (!mindMap.title) {
+      mindMap.title = 'Untitled';
+    }
+
     const updatedMindMap = await MindMap.findByIdAndUpdate(mindMapId, mindMap, {
       returnOriginal: false,
     });
