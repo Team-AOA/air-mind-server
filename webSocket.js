@@ -10,7 +10,7 @@ const webSocket = server => {
   const socketSet = new Set();
 
   io.on('connection', socket => {
-    socketSet.add(socket.id);
+    console.log('socket connected!');
 
     socket.on('colorChange', (mindMapId, nodeId, color) => {
       socket.broadcast.to(mindMapId).emit('receiveColor', nodeId, color);
@@ -84,18 +84,27 @@ const webSocket = server => {
       socket.broadcast.to(mindMapId).emit('deleteUser', currentUserId);
     });
 
+    socket.on('addComment', (nodeId, mindMapId, comment) => {
+      socket.broadcast.to(mindMapId).emit('receiveAddComment', nodeId, comment);
+    });
+
+    socket.on('addImages', (mindMapId, nodeId, images) => {
+      socket.broadcast.to(mindMapId).emit('receiveAddImages', nodeId, images);
+    });
+
     socket.on('joinMindMap', mindMapId => {
-      console.log('Socket added!!', socketSet);
+      socketSet.add(socket.id);
       socket.join(mindMapId);
+      console.log('Socket added!!', socketSet);
     });
 
     socket.on('leaveMindMap', mindMapId => {
-      console.log('Socket leaved!!', socketSet);
       socket.leave(mindMapId);
+      socketSet.delete(socket);
+      console.log('Socket leaved!!', socketSet);
     });
 
     socket.on('disconnect', () => {
-      socketSet.delete(socket.id);
       console.log('user disconnected');
     });
   });
