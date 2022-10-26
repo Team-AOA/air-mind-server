@@ -1,6 +1,6 @@
 const admin = require('../../configs/firebaseConfig');
 
-const auth = async (req, res, next) => {
+const authWithoutError = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
 
@@ -13,11 +13,9 @@ const auth = async (req, res, next) => {
 
     throw new Error('Authentication Error');
   } catch (error) {
-    error.status = 401;
-    error.message = 'Authentication Error';
-
-    return next(error);
+    req.user = null;
+    return next();
   }
 };
 
-module.exports = auth;
+module.exports = authWithoutError;
