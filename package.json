@@ -5,9 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "spec": "mocha spec --sort --exit",
-    "pre-commit": "lint-staged && rm -rf .git/hooks && ln -s ../.husky .git/hooks",
-    "prepare": "husky install && husky add .husky/pre-commit 'npm run pre-commit'"
+    "spec": "mocha spec --sort --exit"
   },
   "lint-staged": {
     "**/*.{js, jsx, html, css, json}": [
