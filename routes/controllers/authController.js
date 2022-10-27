@@ -2,9 +2,13 @@ const User = require('../../models/User');
 
 const login = async (req, res, next) => {
   try {
-    const { name, email, picture } = req.user;
+    if (!req.user) {
+      throw new Error('No user data delivered!!');
+    }
 
+    const { name, email, picture } = req.user;
     const foundeduser = await User.findOne({ email }).lean();
+
     const responseBody = {};
 
     if (!foundeduser) {
@@ -13,18 +17,21 @@ const login = async (req, res, next) => {
         email,
         profile: picture,
       });
+
       responseBody.result = 'ok';
       responseBody.user = newUser;
-      return res.status(201).json(responseBody);
+      res.status(201).json(responseBody);
+      return;
     }
 
     responseBody.result = 'ok';
     responseBody.user = foundeduser;
 
-    return res.status(201).json(responseBody);
+    res.status(201).json(responseBody);
   } catch (error) {
-    console.error(error);
-    return next(error);
+    error.message = `Error in login in authController.js : ${error.message}`;
+
+    next(error);
   }
 };
 

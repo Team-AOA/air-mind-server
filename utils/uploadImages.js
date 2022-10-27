@@ -29,7 +29,7 @@ function setUpobjectStorage(bucket) {
       },
       key(req, file, cb) {
         const extension = path.extname(file.originalname);
-        cb(null, Date.now().toString() + extension);
+        cb(null, file.originalname + Date.now().toString() + extension);
       },
     }),
   }).array('images');

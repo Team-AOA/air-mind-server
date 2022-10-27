@@ -69,19 +69,14 @@ const webSocket = server => {
       socket.broadcast.to(mindMapId).emit('receiveDeleteMindMap', result);
     });
 
-    socket.on('enterNode', (currentUser, ancestorList, mindMapId) => {
-      const { _id: currentUserId } = currentUser;
-      const { profile } = currentUser;
-
+    socket.on('enterNode', (socketId, profile, ancestorList, mindMapId) => {
       socket.broadcast
         .to(mindMapId)
-        .emit('insertUser', currentUserId, profile, ancestorList);
+        .emit('insertUser', socketId, profile, ancestorList);
     });
 
-    socket.on('leaveNode', (currentUser, mindMapId) => {
-      const { _id: currentUserId } = currentUser;
-
-      socket.broadcast.to(mindMapId).emit('deleteUser', currentUserId);
+    socket.on('leaveNode', (socketId, mindMapId) => {
+      socket.broadcast.to(mindMapId).emit('deleteUser', socketId);
     });
 
     socket.on('addComment', (nodeId, mindMapId, comment) => {

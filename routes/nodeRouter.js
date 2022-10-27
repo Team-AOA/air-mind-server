@@ -12,7 +12,7 @@ const {
   deleteNodeData,
   isPublicNode,
   postImageDataInNode,
-} = require('./middlewares/dataHandlingMiddleware');
+} = require('./middlewares/nodeDataHandlingMiddleware');
 const {
   endOfGetNodeReq,
   endOfPutNodeReq,
