@@ -1,24 +1,25 @@
 const admin = require('../../configs/firebaseConfig');
 
 const authWithoutError = async (req, res, next) => {
-  try {
-    if (req.headers && typeof req.headers.authorization === 'string') {
-      const token = req.headers.authorization.split(' ')[1];
+  if (req.headers && typeof req.headers.authorization === 'string') {
+    const tokenString = req.headers.authorization.split(' ');
+    if (tokenString.length > 1) {
+      const token = tokenString[1];
 
-      const decodeValue = await admin.auth().verifyIdToken(token);
-      if (!decodeValue) {
-        throw new Error('Verification failed!!');
+      try {
+        const decodeValue = await admin.auth().verifyIdToken(token);
+        if (!decodeValue) {
+          next();
+        }
+
+        req.user = decodeValue;
+      } catch (error) {
+        next();
       }
-
-      req.user = decodeValue;
     }
-
-    next();
-  } catch (error) {
-    error.message = `Error in authWithoutError in authWithoutErrorMiddleware.js : ${error.message}`;
-
-    next(error);
   }
+
+  next();
 };
 
 module.exports = authWithoutError;
