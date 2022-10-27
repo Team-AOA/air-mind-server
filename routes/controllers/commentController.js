@@ -3,14 +3,16 @@ const Node = require('../../models/Node');
 const getAllComments = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
+    if (!nodeId) {
+      throw new Error('No nodeId delivered!!');
+    }
 
     const foundedNode = await Node.findById(nodeId);
 
     if (!foundedNode) {
-      const error = new Error('nodeId is invalid');
+      const error = new Error('Invalid nodeId!!');
       error.status = 502;
-      next(error);
-      return;
+      throw error;
     }
 
     const responseBody = {};
@@ -19,7 +21,8 @@ const getAllComments = async (req, res, next) => {
 
     res.status(200).json(responseBody);
   } catch (error) {
-    console.log(error);
+    error.message = `Error in getAllComments in commentController.js : ${error.message}`;
+
     next(error);
   }
 };
@@ -27,6 +30,14 @@ const getAllComments = async (req, res, next) => {
 const createComment = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
+    if (!nodeId) {
+      throw new Error('No nodeId delivered!!');
+    }
+
+    if (!req.body) {
+      throw new Error('No comment data delivered!!');
+    }
+
     const { author, content, profile } = req.body;
     const newComment = {
       comments: {
@@ -45,10 +56,9 @@ const createComment = async (req, res, next) => {
     );
 
     if (!updatedNode) {
-      const error = new Error('nodeId is invalid');
+      const error = new Error('Invalid nodeId!!');
       error.status = 502;
-      next(error);
-      return;
+      throw error;
     }
 
     const responseBody = {};
@@ -56,9 +66,9 @@ const createComment = async (req, res, next) => {
     responseBody.data = updatedNode.comments;
 
     res.status(200).json(responseBody);
-    return;
   } catch (error) {
-    console.error(error);
+    error.message = `Error in createComment in commentController.js : ${error.message}`;
+
     next(error);
   }
 };

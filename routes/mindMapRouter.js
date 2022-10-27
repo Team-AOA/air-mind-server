@@ -5,13 +5,15 @@ const router = express.Router();
 const auth = require('./middlewares/authMiddleware');
 const authWithoutError = require('./middlewares/authWithoutErrorMiddleware');
 const {
-  postHeadNodeData,
   getMindMapData,
   putMindMapData,
   postMindMapData,
   deleteMindMapData,
   getMindMapAccessData,
-} = require('./middlewares/dataHandlingMiddleware');
+} = require('./middlewares/mindMapDataHandlingMiddleware');
+const {
+  postHeadNodeData,
+} = require('./middlewares/nodeDataHandlingMiddleware');
 const {
   endOfMindMapReq,
   endOfPostMindMapReq,

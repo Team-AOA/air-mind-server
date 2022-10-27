@@ -55,12 +55,12 @@ app.use((err, req, res, next) => {
   const responseBody = {
     result: 'error',
     error: {
-      message: err.status >= 500 ? 'Internal Server Error' : err.message,
+      message: 'Error occured in backend server',
       code: err.status || 500,
     },
   };
 
-  res.status(err.status || 500);
+  console.error(err);
   res.json(responseBody);
 });
 

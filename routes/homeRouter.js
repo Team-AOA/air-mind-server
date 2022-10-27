@@ -5,7 +5,7 @@ const router = express.Router();
 const { endOfMindMapListReq } = require('./controllers/mindMapController');
 const {
   getPublicMindMapList,
-} = require('./middlewares/dataHandlingMiddleware');
+} = require('./middlewares/mindMapDataHandlingMiddleware');
 
 router.get('/mind-maps', getPublicMindMapList, endOfMindMapListReq);
 
