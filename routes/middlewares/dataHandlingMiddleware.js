@@ -23,38 +23,6 @@ const putNodeData = async (req, res, next) => {
   try {
     const { nodeId } = req.params;
 
-    if (res.req.files) {
-      const images = res.req.files;
-
-      const updatedNode = await Node.findById(nodeId);
-
-      if (updatedNode.images.length > 10) {
-        const error = new Error(
-          'The maximum number of images has been exceeded.',
-        );
-        error.status = 400;
-        next(error);
-        return;
-      }
-
-      images.forEach(async image => {
-        const imageData = {
-          path: image.path,
-          originalName: image.originalname,
-        };
-
-        try {
-          updatedNode.images.push(imageData);
-          await updatedNode.save();
-        } catch (error) {
-          // TODO: 여러 개 넣을 때 에러남, 근데 저장은 됨. 개선 필요
-        }
-      });
-
-      res.locals.updatedNode = updatedNode;
-
-      next();
-    }
     const node = req.body;
 
     const updatedNode = await Node.findByIdAndUpdate(nodeId, node, {
@@ -336,6 +304,45 @@ const isPublicNode = async (req, res, next) => {
   }
 };
 
+const postImageDataInNode = async (req, res, next) => {
+  try {
+    const { nodeId } = req.params;
+    const images = res.req.files;
+
+    const updatedNode = await Node.findById(nodeId);
+
+    if (updatedNode.images.length > 10) {
+      const error = new Error(
+        'The maximum number of images has been exceeded.',
+      );
+      error.status = 400;
+      next(error);
+      return;
+    }
+
+    images.forEach(async image => {
+      const imageData = {
+        path: image.location,
+        originalName: image.originalname,
+      };
+
+      try {
+        updatedNode.images.push(imageData);
+        await updatedNode.save();
+      } catch (error) {
+        next(error);
+      }
+    });
+
+    res.locals.updatedNode = updatedNode;
+    next();
+  } catch (error) {
+    error.message = `Error during putting node in function putNodeData of dataHandlingMiddleware.js : ${error.message}`;
+
+    next(error);
+  }
+};
+
 module.exports = {
   getNodeData,
   putNodeData,
@@ -351,4 +358,5 @@ module.exports = {
   getMyMindMapList,
   getPublicMindMapList,
   isPublicNode,
+  postImageDataInNode,
 };

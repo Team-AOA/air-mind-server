@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const multer = require('multer');
+const setUpobjectStorage = require('../utils/uploadImages');
 
 const auth = require('./middlewares/authMiddleware');
 const {
@@ -11,6 +11,7 @@ const {
   postNodeData,
   deleteNodeData,
   isPublicNode,
+  postImageDataInNode,
 } = require('./middlewares/dataHandlingMiddleware');
 const {
   endOfGetNodeReq,
@@ -23,22 +24,17 @@ const {
   createComment,
 } = require('./controllers/commentController');
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'tmpImages/');
-  },
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-  limits: { fileSize: 5 * 1024 * 1024 },
-});
-
-const upload = multer({ storage });
+router.post(
+  '/:nodeId/images',
+  setUpobjectStorage('air-mind-images'),
+  postImageDataInNode,
+  endOfPutNodeReq,
+);
 
 router
   .route('/:nodeId')
   .get(getNodeData, makePlainObject, isPublicNode, auth, endOfGetNodeReq)
-  .put(auth, upload.array('images'), putNodeData, endOfPutNodeReq)
+  .put(auth, putNodeData, endOfPutNodeReq)
   .post(auth, postNodeData, endOfPostNodeReq)
   .delete(auth, deleteNodeData, endOfDeleteNodeReq);
 
