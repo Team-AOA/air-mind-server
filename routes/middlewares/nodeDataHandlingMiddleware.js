@@ -293,6 +293,11 @@ const deleteImageDataInNode = async (req, res, next) => {
     targetNode.images = targetNode.images.filter(
       image => image.path !== imagePath,
     );
+
+    await targetNode.save();
+
+    res.locals.updatedNode = targetNode;
+    next();
   } catch (error) {
     error.message = `Error in deleteImageDataInNode in nodeDataHandlingMiddleware.js : ${error.message}`;
 
