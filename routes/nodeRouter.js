@@ -12,6 +12,7 @@ const {
   deleteNodeData,
   isPublicNode,
   postImageDataInNode,
+  deleteImageDataInNode,
 } = require('./middlewares/nodeDataHandlingMiddleware');
 const {
   endOfGetNodeReq,
@@ -24,12 +25,14 @@ const {
   createComment,
 } = require('./controllers/commentController');
 
-router.post(
-  '/:nodeId/images',
-  setUpobjectStorage('air-mind-images'),
-  postImageDataInNode,
-  endOfPutNodeReq,
-);
+router
+  .route('/:nodeId/images')
+  .post(
+    setUpobjectStorage('air-mind-images'),
+    postImageDataInNode,
+    endOfPutNodeReq,
+  )
+  .put(deleteImageDataInNode, endOfPutNodeReq);
 
 router
   .route('/:nodeId')

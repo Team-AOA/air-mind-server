@@ -156,6 +156,22 @@ const getPublicMindMapList = async (req, res, next) => {
   }
 };
 
+const getAllMindMapIdList = async (req, res, next) => {
+  try {
+    const mindMapList = await MindMap.find();
+    res.locals.mindMapIdList = mindMapList.map(mindMap => {
+      const { _id: mindMapId } = mindMap;
+      return mindMapId;
+    });
+
+    next();
+  } catch (error) {
+    error.message = `Error in getAllMindMapIdList in mindMapDataHandlingMiddleware.js : ${error.message}`;
+
+    next(error);
+  }
+};
+
 module.exports = {
   getMindMapData,
   putMindMapData,
@@ -164,4 +180,5 @@ module.exports = {
   getMindMapAccessData,
   getMyMindMapList,
   getPublicMindMapList,
+  getAllMindMapIdList,
 };
