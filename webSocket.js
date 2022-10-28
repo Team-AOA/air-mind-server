@@ -87,6 +87,12 @@ const webSocket = server => {
       socket.broadcast.to(mindMapId).emit('receiveAddImages', nodeId, images);
     });
 
+    socket.on('deleteImage', (mindMapId, nodeId, imagePath) => {
+      socket.broadcast
+        .to(mindMapId)
+        .emit('receiveDeleteImage', nodeId, imagePath);
+    });
+
     socket.on('joinMindMap', mindMapId => {
       socketSet.add(socket.id);
       socket.join(mindMapId);

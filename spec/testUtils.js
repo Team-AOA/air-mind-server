@@ -36,7 +36,9 @@ const backupOriginalData = async () => {
   try {
     const originalUserData = await User.find();
     const originalMindMapData = await MindMap.find();
-    const originalNodeData = await Node.find();
+    const originalNodeData = await Node.find().setOptions({
+      autopopulate: false,
+    });
     console.log('Data backed up!');
     return {
       originalUserData,

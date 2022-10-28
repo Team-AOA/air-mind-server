@@ -35,6 +35,8 @@ const putNodeData = async (req, res, next) => {
 
     const updatedNode = await Node.findByIdAndUpdate(nodeId, node, {
       returnOriginal: false,
+    }).setOptions({
+      autopopulate: false,
     });
     res.locals.updatedNode = updatedNode;
 
@@ -58,7 +60,9 @@ const postNodeData = async (req, res, next) => {
       throw new Error('No data for update delivered!');
     }
 
-    const parentNode = await Node.findById(nodeId);
+    const parentNode = await Node.findById(nodeId).setOptions({
+      autopopulate: false,
+    });
     const childNode = await Node.create(node);
 
     if (!parentNode) {
@@ -92,12 +96,16 @@ const deleteNodeData = async (req, res, next) => {
       throw new Error('No nodeId delivered!');
     }
 
-    const { parent: parentId } = await Node.findById(nodeId);
+    const { parent: parentId } = await Node.findById(nodeId).setOptions({
+      autopopulate: false,
+    });
     if (!parentId) {
       throw new Error('No parent node exists!!');
     }
 
-    const updateParentTarget = await Node.findById(parentId);
+    const updateParentTarget = await Node.findById(parentId).setOptions({
+      autopopulate: false,
+    });
 
     const childrenList = updateParentTarget.children;
     if (!Array.isArray(childrenList)) {
@@ -231,7 +239,9 @@ const postImageDataInNode = async (req, res, next) => {
       throw new Error('No images data delivered!!');
     }
 
-    const updatedNode = await Node.findById(nodeId);
+    const updatedNode = await Node.findById(nodeId).setOptions({
+      autopopulate: false,
+    });
 
     if (updatedNode.images.length + images.length > 10) {
       const error = new Error(
@@ -258,7 +268,33 @@ const postImageDataInNode = async (req, res, next) => {
     res.locals.updatedNode = updatedNode;
     next();
   } catch (error) {
-    error.message = `Error in putNodeData in nodeDataHandlingMiddleware.js : ${error.message}`;
+    error.message = `Error in postImageDataInNode in nodeDataHandlingMiddleware.js : ${error.message}`;
+
+    next(error);
+  }
+};
+
+const deleteImageDataInNode = async (req, res, next) => {
+  try {
+    const { nodeId } = req.params;
+    if (!nodeId) {
+      throw new Error('No nodeId delivered!!');
+    }
+
+    const { path: imagePath } = req.body;
+    if (!imagePath) {
+      throw new Error('No target image path delivered!!');
+    }
+
+    const targetNode = await Node.findById(nodeId).setOptions({
+      autopopulate: false,
+    });
+
+    targetNode.images = targetNode.images.filter(
+      image => image.path !== imagePath,
+    );
+  } catch (error) {
+    error.message = `Error in deleteImageDataInNode in nodeDataHandlingMiddleware.js : ${error.message}`;
 
     next(error);
   }
@@ -273,4 +309,5 @@ module.exports = {
   makePlainObject,
   isPublicNode,
   postImageDataInNode,
+  deleteImageDataInNode,
 };

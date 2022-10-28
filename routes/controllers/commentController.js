@@ -7,7 +7,9 @@ const getAllComments = async (req, res, next) => {
       throw new Error('No nodeId delivered!!');
     }
 
-    const foundedNode = await Node.findById(nodeId);
+    const foundedNode = await Node.findById(nodeId).setOptions({
+      autopopulate: false,
+    });
 
     if (!foundedNode) {
       const error = new Error('Invalid nodeId!!');
@@ -53,7 +55,9 @@ const createComment = async (req, res, next) => {
         $addToSet: newComment,
       },
       { returnOriginal: false },
-    );
+    ).setOptions({
+      autopopulate: false,
+    });
 
     if (!updatedNode) {
       const error = new Error('Invalid nodeId!!');

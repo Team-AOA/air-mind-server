@@ -17,6 +17,25 @@ const endOfMindMapListReq = async (req, res, next) => {
   res.status(200).json(responseBody);
 };
 
+const endOfAllMindMapIdListReq = async (req, res, next) => {
+  if (!res.locals.mindMapIdList) {
+    const error = new Error(
+      'No data delivered to endOfAllMindMapIdListReq in mindMapController.js',
+    );
+    error.status = 500;
+
+    next(error);
+  }
+
+  const responseBody = {};
+
+  responseBody.result = 'ok';
+  responseBody.mindMapId = res.locals.mindMapIdList;
+  responseBody.count = res.locals.mindMapIdList.length;
+
+  res.status(200).json(responseBody);
+};
+
 const endOfMindMapReq = (req, res, next) => {
   if (!res.locals.mindMap) {
     const error = new Error(
@@ -83,6 +102,7 @@ const endOfMindMapAccessReq = (req, res, next) => {
 
 module.exports = {
   endOfMindMapListReq,
+  endOfAllMindMapIdListReq,
   endOfMindMapReq,
   endOfPostMindMapReq,
   endOfDeleteMindMapReq,
