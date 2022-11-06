@@ -10,16 +10,20 @@
 에어 마인드는 아이디어를 쉽게 분류할 수 있는 마인드맵을 만들 수 있는 웹사이트입니다.  
 주소를 공유하여 실시간으로 다른 유저들의 작업 상황을 확인하며 소통할 수 있어 아이디어 공유 및 협업이 가능하고, 작업의 생산성을 높일 수 있습니다.
 
-## Table of content
+## Table of contents
 
-- Introduction
-- Motivation
-- Schedule
-- Layout
-- Installation
-- Stack
-- 기술 선정 이유
-- 기술 관련 고민
+- [Introduction](https://github.com/Team-AOA/air-mind-server#air-mind)
+- [Motivation](https://github.com/Team-AOA/air-mind-server#motivation)
+- [Build Status](https://github.com/Team-AOA/air-mind-server#build-status)
+- [Schedule](https://github.com/Team-AOA/air-mind-server#schedule-20221010--20221028)
+- [Screenshots](https://github.com/Team-AOA/air-mind-server#screenshots)
+- [Installation](https://github.com/Team-AOA/air-mind-server#installation)
+- [Tech/Framework used](https://github.com/Team-AOA/air-mind-server#techframework-used)
+- [Code Style](https://github.com/Team-AOA/air-mind-server#code-style)
+- [기술 선정 이유](https://github.com/Team-AOA/air-mind-server#%EA%B8%B0%EC%88%A0-%EC%84%A0%EC%A0%95-%EC%9D%B4%EC%9C%A0)
+- [Challenges](https://github.com/Team-AOA/air-mind-server#challenges)
+- [회고](https://github.com/Team-AOA/air-mind-server#%ED%9A%8C%EA%B3%A0)
+- [Member](https://github.com/Team-AOA/air-mind-server#member)
 
 ## Motivation
 
@@ -207,7 +211,7 @@ npm start
 
 ### NextJS
 
-마인드맵의 버전을 Public 버전과 Private 버전을 나누어 Public 버전은 검색에 노출되게 만들기 위해 NextJS를 적용하게 되었습니다. NextJS를 쓰지 않고, React의 helmet을 통해 SEO를 적용하는 방법도 있었지만, 더 SEO에 최적화되어 있고 SSR 방식을 제공하는 NextJS를 통해 새로운 스택에 도전해 보게 되었습니다.
+마인드맵의 버전을 Public 버전과 Private 버전으로 나누어 Public 버전은 검색에 노출되게 만들기 위해 NextJS를 적용하게 되었습니다. NextJS를 쓰지 않고, React의 helmet을 통해 SEO를 적용하는 방법도 있었지만, 더 SEO에 최적화되어 있고 SSR 방식을 제공하는 NextJS를 통해 새로운 스택에 도전해 보게 되었습니다.
 
 ### Recoil
 
