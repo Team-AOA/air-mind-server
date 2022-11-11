@@ -1,41 +1,67 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require('dotenv').config();
+const express = require('express');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const {
+  homeRouter,
+  userRouter,
+  mindMapRouter,
+  nodeRouter,
+} = require('./routes/index');
 
-var app = express();
+const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+require('./configs/dbConfig')();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use('/tmpImages', express.static('./tmpImages'));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  next();
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use('/', homeRouter);
+app.use('/users', userRouter);
+app.use(
+  '/users/:userId/mind-maps',
+  (req, res, next) => {
+    res.locals.userId = req.params.userId;
+    next();
+  },
+  mindMapRouter,
+);
+app.use(
+  '/users/:userId/mind-maps/:mindMapId/nodes',
+  (req, res, next) => {
+    res.locals = { ...req.params };
+    next();
+  },
+  nodeRouter,
+);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use((req, res, next) => {
+  const error = new Error('Page Not Found');
+  error.status = 404;
+  next(error);
+});
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  const responseBody = {
+    result: 'error',
+    error: {
+      message: 'Error occured in backend server',
+      code: err.status || 500,
+    },
+  };
+
+  console.error(err);
+  res.json(responseBody);
 });
 
 module.exports = app;

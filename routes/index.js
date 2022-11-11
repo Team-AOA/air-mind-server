@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const homeRouter = require('./homeRouter');
+const userRouter = require('./userRouter');
+const nodeRouter = require('./nodeRouter');
+const mindMapRouter = require('./mindMapRouter');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
-module.exports = router;
+module.exports = {
+  homeRouter,
+  userRouter,
+  mindMapRouter,
+  nodeRouter,
+};
